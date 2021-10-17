@@ -83,31 +83,70 @@
 // MYOB Code Test - Get My Income Tax
 
 // KC Answer
-const getMyIncomeTax = (taxableIncome) => { 
-    const income = [0, 18200, 37000, 90000, 180000]; 
-    const rate = [0, 0.19, 0.325, 0.37, 0.45];
-    const extraOver = [0, 0, 3575, 20797, 54096];
-    if (income[0] < taxableIncome && taxableIncome <= income[1]) {
-        return 'Nil';
-    }
-    if (income[1] < taxableIncome && taxableIncome <= income[2]) {
-        console.log("🚀 ~ file: index.js ~ line 94 ~ getMyIncomeTax ~ income[1] < taxableIncome && taxableIncome <= income[2]", income[1] < taxableIncome && taxableIncome <= income[2])
-        return (taxableIncome-income[1])*rate[1];
-    }
-    if (income[2] < taxableIncome && taxableIncome <= income[3]) {
-        return (taxableIncome-income[2])*rate[2]+extraOver[2];
-    }
-    if (income[3] < taxableIncome && taxableIncome <= income[4]) {
-        return (taxableIncome-income[3])*rate[3]+extraOver[3];
-    }
-    if (income[4] < taxableIncome) {
-        return (taxableIncome-income[4])*rate[4]+extraOver[4];
-    }
-};
+// const getMyIncomeTax = (taxableIncome) => { 
+//     const income = [0, 18200, 37000, 90000, 180000]; 
+//     const rate = [0, 0.19, 0.325, 0.37, 0.45];
+//     const extraOver = [0, 0, 3575, 20797, 54096];
+//     if (income[0] < taxableIncome && taxableIncome <= income[1]) {
+//         return 'Nil';
+//     }
+//     if (income[1] < taxableIncome && taxableIncome <= income[2]) {
+//         console.log("🚀 ~ file: index.js ~ line 94 ~ getMyIncomeTax ~ income[1] < taxableIncome && taxableIncome <= income[2]", income[1] < taxableIncome && taxableIncome <= income[2])
+//         return (taxableIncome-income[1])*rate[1];
+//     }
+//     if (income[2] < taxableIncome && taxableIncome <= income[3]) {
+//         return (taxableIncome-income[2])*rate[2]+extraOver[2];
+//     }
+//     if (income[3] < taxableIncome && taxableIncome <= income[4]) {
+//         return (taxableIncome-income[3])*rate[3]+extraOver[3];
+//     }
+//     if (income[4] < taxableIncome) {
+//         return (taxableIncome-income[4])*rate[4]+extraOver[4];
+//     }
+// };
 
-console.log(getMyIncomeTax(18300))
+// console.log(getMyIncomeTax(18300))
 
+// Better answer
+const taxTable = [{
+    min: 0, 
+    max: 18200, 
+    floor: 0, 
+    taxPayable: 0, 
+    rate: 0,
+},{
+    min: 18201, 
+    max: 37000, 
+    floor: 18200, 
+    taxPayable: 0, 
+    rate: 0.19,
+},{
+    min: 37001, 
+    max: 90000, 
+    floor: 37000, 
+    taxPayable: 3572, 
+    rate: 0.325,
+},{
+    min: 90001, 
+    max: 180000, 
+    floor: 90000, 
+    taxPayable: 20797, 
+    rate: 0.37,
+},{
+    min: 180001, 
+    ax: Number.POSITIVE_INFINITY, 
+    floor: 180000, 
+    taxPayable: 54096, 
+    rate: 0.45,
+}]
 
+const calculateTax = (table, income) => {
+    const {floor, taxPayable, rate} = table.find((row) => income > row.min && income <= row.max);
+
+    return (income - floor) * rate + taxPayable;
+}
+const result = calculateTax(taxTable, 77500)
+console.log(result) 
 
 
 // Quantas Code Test - Flight Stops 
